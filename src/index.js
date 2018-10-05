@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './components/App.vue'
 import UserInfo from './components/UserInfo.vue'
 import Login from './components/Login.vue'
+import ModelAttributes from './components/ModelAttributes.vue'
+import CustomersList from './components/CustomersList.vue'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -21,6 +23,12 @@ router.map({
   },
   '/login': {
     component: Login
+  },
+  '/modelattributes': {
+    component: ModelAttributes
+  },
+  '/customerslist': {
+    component: CustomersList
   }
 })
 

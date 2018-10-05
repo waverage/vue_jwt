@@ -3,7 +3,7 @@ import auth from '../../auth'
 import {router} from '../../index'
 
 const API_URL = 'http://tsumanchuk.dev.spl/api/2.0/'
-const RENEW_TOKEN_URL = 'admin/auth/token'
+const RENEW_TOKEN_URL = 'admin/auth/tokens'
 
 export default {
     beforeRequest() {
@@ -99,5 +99,112 @@ export default {
                 reject(err);
             })
         })
-    }
+    },
+
+    options(url, options) {
+        console.log('--------------------------');
+        console.log('Make OPTIONS request', url);
+
+        return new Promise((resolve, reject) => {
+            this.beforeRequest().then(ok => {
+                if (typeof options == 'undefined') {
+                    var options = {
+                        headers: {}
+                    };
+                }
+                options.headers['Authorization'] = auth.getAuthHeader()
+                Vue.axios.options(API_URL + url, options).then(res => {
+                    resolve(res);
+                }, err => {
+                    reject(err);
+                })
+            }, err => {
+                console.log('err', err);
+                reject(err);
+            })
+        })
+    },
+
+    head(url) {
+        console.log('--------------------------');
+        console.log('Make HEAD request', url);
+
+        return new Promise((resolve, reject) => {
+            this.beforeRequest().then(ok => {
+                var options = {
+                    headers: {}
+                };
+                options.headers['Authorization'] = auth.getAuthHeader()
+                Vue.axios.head(API_URL + url, options).then(res => {
+                    resolve(res);
+                }, err => {
+                    reject(err);
+                })
+            }, err => {
+                console.log('err', err);
+                reject(err);
+            })
+        })
+    },
+
+    urlencode (str) {
+        str = (str + '')
+        return encodeURIComponent(str)
+          .replace(/!/g, '%21')
+          .replace(/'/g, '%27')
+          .replace(/\(/g, '%28')
+          .replace(/\)/g, '%29')
+          .replace(/\*/g, '%2A')
+          .replace(/%20/g, '+')
+      },
+
+    http_build_query (formdata, numericPrefix, argSeparator) {      
+        var encodeFunc = this.urlencode
+      
+        var value
+        var key
+        var tmp = []
+      
+        var _httpBuildQueryHelper = function (key, val, argSeparator) {
+          var k
+          var tmp = []
+          if (val === true) {
+            val = '1'
+          } else if (val === false) {
+            val = '0'
+          }
+          if (val !== null) {
+            if (typeof val === 'object') {
+              for (k in val) {
+                if (val[k] !== null) {
+                  tmp.push(_httpBuildQueryHelper(key + '[' + k + ']', val[k], argSeparator))
+                }
+              }
+              return tmp.join(argSeparator)
+            } else if (typeof val !== 'function') {
+              return encodeFunc(key) + '=' + encodeFunc(val)
+            } else {
+              throw new Error('There was an error processing for http_build_query().')
+            }
+          } else {
+            return ''
+          }
+        }
+      
+        if (!argSeparator) {
+          argSeparator = '&'
+        }
+        for (key in formdata) {
+          value = formdata[key]
+          if (numericPrefix && !isNaN(key)) {
+            key = String(numericPrefix) + key
+          }
+          var query = _httpBuildQueryHelper(key, value, argSeparator)
+          if (query !== '') {
+            tmp.push(query)
+          }
+        }
+      
+        return tmp.join(argSeparator)
+      }
 }

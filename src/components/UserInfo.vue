@@ -3,12 +3,12 @@
     <h1>Get Norris info!</h1>
     <button class="btn btn-warning" v-on:click="getInfo()">Get info</button>
     <br>
-    <div class="quote-area" v-if="login">
-      <p>Login: <b>{{ login }}</b></p>
-      <p>Name: <b>{{ name }}</b></p>
-      <p>Password: <b>{{ password }}</b></p>
-      <p>Phone: <b>{{ phone }}</b></p>
-      <p>Last online: <b>{{ last_online }}</b></p>
+    <div class="quote-area" v-if="userInfo">
+      <pre>
+        <code>
+        {{ userInfo }}
+        </code>
+      </pre>
     </div>
   </div>
 </template>
@@ -21,11 +21,7 @@ export default {
 
   data() {
     return {
-      name: '',
-      login: '',
-      password: '',
-      phone: '',
-      last_online: '',
+      userInfo: '{}'
     }
   },
 
@@ -34,11 +30,7 @@ export default {
       api.get('admin/customers/customer/1').then(response => {
           var data = response.data;
           console.log('data', data);
-          this.name = data.name;
-          this.login = data.login;
-          this.password = data.password;
-          this.phone = data.phone;
-          this.last_online = data.last_online;
+          this.userInfo = JSON.stringify(data, null, 4);
         }, err => {
           console.log(err)
         })

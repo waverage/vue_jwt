@@ -5,6 +5,8 @@
         <ul class="nav navbar-nav">
           <li v-if="!user.authenticated"><a v-link="'login'">Login</a></li>
           <li v-if="user.authenticated"><a v-link="'userinfo'">User</a></li>
+          <li v-if="user.authenticated"><a v-link="'modelattributes'">Model attributes</a></li>
+          <li v-if="user.authenticated"><a v-link="'customerslist'">Customers list</a></li>
           <li v-if="user.authenticated"><a v-link="'login'" @click="logout()">Logout</a></li>
         </ul>
       </div>    
